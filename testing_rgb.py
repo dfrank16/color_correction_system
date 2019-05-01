@@ -19,16 +19,6 @@ im = Image.new('RGBA', (300, 300))
 
 def main():
 
-
-    # Initialize I2C bus and sensor.
-
-
-    
-    #im.getpixel((0, 0))
-
-
-
-
     # Read the color temperature and lux of the sensor too.
     temp = sensor.color_temperature
     lux = sensor.lux
