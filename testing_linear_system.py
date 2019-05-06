@@ -20,9 +20,9 @@ if __name__ == '__main__':
     color_match = False
     num_cycles = 0
     
-    r_sensor = 0
-    g_sensor = 100
-    b_sensor = 200
+    r_sensor = 128
+    g_sensor = 128
+    b_sensor = 128
     
     r_desired = int(sys.argv[1])
     g_desired = int(sys.argv[2])
