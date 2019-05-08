@@ -2,28 +2,49 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 import sys
+import board
+import busio
+import adafruit_tcs34725
 
 def update_graph(red, green, blue):
     red_dec = (red/255)
     green_dec = (green/255)
     blue_dec = (blue/255)
-    color_desiredec = (red_dec, green_dec, blue_dec)
-    graph.fill(x, y, c=color_desiredec)
+
+    if red_dec > 1:
+        red_dec = 1
+    if green_dec > 1:
+        green_dec = 1
+    if blue_dec > 1:
+        blue_dec = 1
+
+    color_desired = (red_dec, green_dec, blue_dec)
+    graph.fill(x, y, c=color_desired)
 
 if __name__ == '__main__':
+    i2c = busio.I2C(board.SCL, board.SDA)
+    sensor = adafruit_tcs34725.TCS34725(i2c)
+    rgb = sensor.color_raw
+
     plt.ion()
+    fig2, graph2 = plt.subplots()
     fig, graph = plt.subplots()
     x = [0, 0, 1, 1]
     y = [0, 1, 1, 0]
+    x_scatter = []
+    y_scatter = []
+    colors = []
+    graph2.grid()
+
     cond = True
     failure = False
     num_iterations = 0
     stop = 30
     
-    r_s = 27
-    g_s = 50
-    b_s = 160
-    print("R:",r_s,"G:",g_s,"B:",b_s)
+    r_s = rgb[0]
+    g_s = rgb[1]
+    b_s = rgb[2]
+    print("\nInitial RGB Value: (",r_s, g_s, b_s, ")")
 
     #These are our desired values
     r_d = 0
@@ -48,15 +69,26 @@ if __name__ == '__main__':
         g_d = int(sys.argv[2])
         b_d = int(sys.argv[3])
         print("\nDesired RGB Value: (", sys.argv[1], sys.argv[2], sys.argv[3], ")\n")
+    
     except IndexError:
         cond = False
         failure = True
     
+    update_graph(r_s, g_s, b_s)
+    input("Press Enter to begin...")
+
     try: 
         while cond == True:
             update_graph(r_s, g_s, b_s)
             plt.pause(0.01)
             plt.draw()
+            y_scatter.append(r_s)
+            y_scatter.append(g_s)
+            y_scatter.append(b_s)
+            
+            colors.append("red")
+            colors.append("green")
+            colors.append("blue")
             
             r_p = int((r_d-r_s)*kp)
             g_p = int((g_d-g_s)*kp)
@@ -67,14 +99,18 @@ if __name__ == '__main__':
             g_u = g_s+g_p
             b_u = b_s+b_p
             
-            #Here is where we would update the color but this hasn't been implemented
-            #yet, so I'm using this as a temporary replacement for testing
-            r_s=r_u
-            g_s=g_u
-            b_s=b_u
+            r_s = rgb[0]
+            g_s = rgb[1]
+            b_s = rgb[2]
             print("R:",r_s,"G:",g_s,"B:",b_s)
             
             num_iterations = num_iterations + 1
+
+            x_scatter.append(num_iterations)
+            x_scatter.append(num_iterations)
+            x_scatter.append(num_iterations)
+                
+            scatter = graph2.scatter(x_scatter, y_scatter, color=colors)
             
             #Stop after you reach final iteration count
             if stop == num_iterations:
@@ -88,7 +124,11 @@ if __name__ == '__main__':
     else:
         print("\nComplete!\n")
         print("Iterations:",num_iterations)
-        plt.pause(3)
+        scatter = graph2.scatter(x_scatter, y_scatter, color=colors)
+        try:
+            plt.pause(100)
+        except KeyboardInterrupt:
+            sys.exit()
     
 
 

@@ -2,6 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 import sys
+import board
+import busio
+import adafruit_tcs34725
 
 def update_graph(red, green, blue):
     red_dec = (red/255)
@@ -19,6 +22,10 @@ def update_graph(red, green, blue):
     graph.fill(x, y, c=color_desired)
 
 if __name__ == '__main__':
+	i2c = busio.I2C(board.SCL, board.SDA)
+    sensor = adafruit_tcs34725.TCS34725(i2c)
+    rgb = sensor.color_raw
+
     plt.ion()
     fig2, graph2 = plt.subplots()
     fig, graph = plt.subplots()
@@ -34,9 +41,9 @@ if __name__ == '__main__':
     num_iterations = 0
     stop = 30
     
-    r_s = 27
-    g_s = 50
-    b_s = 160
+    r_s = rgb[0]
+    g_s = rgb[1]
+    b_s = rgb[2]
     print("\nInitial RGB Value: (",r_s, g_s, b_s, ")")
 
     #These are our desired values
@@ -84,7 +91,6 @@ if __name__ == '__main__':
     try: 
         while cond == True:
             update_graph(r_s, g_s, b_s)
-            #update_scatter(r
             plt.pause(0.01)
             plt.draw()
             y_scatter.append(r_s)
@@ -99,6 +105,7 @@ if __name__ == '__main__':
             r_error = r_d - r_s
             g_error = g_d - g_s
             b_error = b_d - b_s
+            
             #Red
             if abs(r_error)>=5:
                 r_p = int(r_error*kp)
@@ -111,6 +118,7 @@ if __name__ == '__main__':
                     r_u = r_s-1
                 else:
                     r_u = r_d
+            
             #Green
             if abs(g_error)>=5:
                 g_p = int(g_error*kp)
@@ -123,6 +131,7 @@ if __name__ == '__main__':
                     g_u = g_s-1
                 else:
                     g_u = g_d
+            
             #Blue
             if abs(b_error)>=5:
                 b_p = int(b_error*kp)
@@ -136,11 +145,9 @@ if __name__ == '__main__':
                 else:
                     b_u = b_d
             
-            #Here is where we would update the color but this hasn't been implemented
-            #yet, so I'm using this as a temporary replacement for testing
-            r_s=r_u
-            g_s=g_u
-            b_s=b_u
+            r_s = rgb[0]
+    		g_s = rgb[1]
+    		b_s = rgb[2]
             print("R:",r_s,"G:",g_s,"B:",b_s)
             
             #Update the previous error variables
@@ -149,6 +156,7 @@ if __name__ == '__main__':
             b_prev = b_error
             
             num_iterations = num_iterations + 1
+
             x_scatter.append(num_iterations)
             x_scatter.append(num_iterations)
             x_scatter.append(num_iterations)
