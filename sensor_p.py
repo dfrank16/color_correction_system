@@ -13,14 +13,14 @@ def update_graph(red, green, blue):
     red_dec = (red/255)
     green_dec = (green/255)
     blue_dec = (blue/255)
-    
+
     if red_dec > 1:
         red_dec = 1
     if green_dec > 1:
         green_dec = 1
     if blue_dec > 1:
         blue_dec = 1
-        
+
     color_desired = (red_dec, green_dec, blue_dec)
     graph.fill(x, y, c=color_desired)
 
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     y_scatter = []
     colors = []
     graph2.grid()
-    
+
     cond = True
     failure = False
     num_iterations = 0
@@ -64,19 +64,8 @@ if __name__ == '__main__':
     g_p = 0
     b_p = 0
     
-    #Derivative change variable initialization
-    r_deriv = 0
-    g_deriv = 0
-    b_deriv = 0
-    
-    #Value of previous sensor values for derivatve stuff
-    #We start with these errors so derivative has an initial starting point (of 0)
-    r_prev = r_d-r_s
-    g_prev = g_d-g_s
-    b_prev = b_d-b_s
-    
+    #Change this value around until you find something that works!
     kp = 0.6
-    kd = 0.2
     
     try: 
         r_d = int(sys.argv[1])
@@ -90,9 +79,10 @@ if __name__ == '__main__':
     
     update_graph(r_u, g_u, b_u)
     input("Press Enter to begin...")
-    
+
     try: 
         while cond == True:
+            
             y_scatter.append(r_s)
             y_scatter.append(g_s)
             y_scatter.append(b_s)
@@ -101,50 +91,15 @@ if __name__ == '__main__':
             colors.append("green")
             colors.append("blue")
             
-            #Errors
-            r_error = r_d - r_s
-            g_error = g_d - g_s
-            b_error = b_d - b_s
+            r_p = int((r_d-r_s)*kp)
+            g_p = int((g_d-g_s)*kp)
+            b_p = int((b_d-b_s)*kp)
+            print("P R:",r_p,"G:",g_p,"B:",b_p)
             
-            #Red
-            if abs(r_error)>=5:
-                r_p = int(r_error*kp)
-                r_deriv = int((r_error-r_prev)*kd)
-                r_u = r_s+r_p+r_deriv
-            else:
-                if r_s < r_d:
-                    r_u = r_s+1
-                elif r_s > r_d:
-                    r_u = r_s-1
-                else:
-                    r_u = r_d
-            
-            #Green
-            if abs(g_error)>=5:
-                g_p = int(g_error*kp)
-                g_deriv = int((g_error-g_prev)*kd)
-                g_u = g_s+g_p+g_deriv
-            else:
-                if g_s < g_d:
-                    g_u = g_s+1
-                elif g_s > g_d:
-                    g_u = g_s-1
-                else:
-                    g_u = g_d
-            
-            #Blue
-            if abs(b_error)>=5:
-                b_p = int(b_error*kp)
-                b_deriv = int((b_error-b_prev)*kd)
-                b_u = b_s+b_p+b_deriv
-            else:
-                if b_s < b_d:
-                    b_u = b_s+1
-                elif b_s > b_d:
-                    b_u = b_s-1
-                else:
-                    b_u = b_d
-            
+            #Now update the screen using the above values
+            r_u = r_s+r_p
+            g_u = g_s+g_p
+            b_u = b_s+b_p
             print("Update color R:",r_u,"G:",g_u,"B:",b_u)
             
             update_graph(r_u, g_u, b_u)
@@ -157,17 +112,12 @@ if __name__ == '__main__':
             b_s = rgb[2]
             print("Sensor R:",r_s,"G:",g_s,"B:",b_s)
             
-            #Update the previous error variables
-            r_prev = r_error
-            g_prev = g_error
-            b_prev = b_error
-            
             num_iterations = num_iterations + 1
 
             x_scatter.append(num_iterations)
             x_scatter.append(num_iterations)
             x_scatter.append(num_iterations)
-
+            
             print("\n")
                 
             scatter = graph2.scatter(x_scatter, y_scatter, color=colors)
