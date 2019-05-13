@@ -1,3 +1,4 @@
+from __future__ import print_function
 import matplotlib.pyplot as plt
 import numpy as np
 import time
@@ -22,7 +23,7 @@ def update_graph(red, green, blue):
     graph.fill(x, y, c=color_desired)
 
 if __name__ == '__main__':
-	i2c = busio.I2C(board.SCL, board.SDA)
+    i2c = busio.I2C(board.SCL, board.SDA)
     sensor = adafruit_tcs34725.TCS34725(i2c)
     rgb = sensor.color_raw
 
@@ -146,8 +147,8 @@ if __name__ == '__main__':
                     b_u = b_d
             
             r_s = rgb[0]
-    		g_s = rgb[1]
-    		b_s = rgb[2]
+            g_s = rgb[1]
+            b_s = rgb[2]
             print("R:",r_s,"G:",g_s,"B:",b_s)
             
             #Update the previous error variables

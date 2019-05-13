@@ -1,10 +1,13 @@
+from __future__ import print_function
 import matplotlib.pyplot as plt
 import numpy as np
 import time
 import sys
+import os
 import board
 import busio
 import adafruit_tcs34725
+import argparse
 
 def update_graph(red, green, blue):
     red_dec = (red/255)
@@ -62,7 +65,7 @@ if __name__ == '__main__':
     b_p = 0
     
     #Change this value around until you find something that works!
-    kp = 0.4
+    kp = 0.6
     
     try: 
         r_d = int(sys.argv[1])
@@ -74,14 +77,12 @@ if __name__ == '__main__':
         cond = False
         failure = True
     
-    update_graph(r_s, g_s, b_s)
+    update_graph(r_u, g_u, b_u)
     input("Press Enter to begin...")
 
     try: 
         while cond == True:
-            update_graph(r_s, g_s, b_s)
-            plt.pause(0.01)
-            plt.draw()
+            
             y_scatter.append(r_s)
             y_scatter.append(g_s)
             y_scatter.append(b_s)
@@ -93,22 +94,31 @@ if __name__ == '__main__':
             r_p = int((r_d-r_s)*kp)
             g_p = int((g_d-g_s)*kp)
             b_p = int((b_d-b_s)*kp)
+            print("P R:",r_p,"G:",g_p,"B:",b_p)
             
             #Now update the screen using the above values
             r_u = r_s+r_p
             g_u = g_s+g_p
             b_u = b_s+b_p
+            print("Update color R:",r_u,"G:",g_u,"B:",b_u)
             
+            update_graph(r_u, g_u, b_u)
+            plt.pause(1)
+            plt.draw()
+            
+            rgb = sensor.color_raw
             r_s = rgb[0]
             g_s = rgb[1]
             b_s = rgb[2]
-            print("R:",r_s,"G:",g_s,"B:",b_s)
+            print("Sensor R:",r_s,"G:",g_s,"B:",b_s)
             
             num_iterations = num_iterations + 1
 
             x_scatter.append(num_iterations)
             x_scatter.append(num_iterations)
             x_scatter.append(num_iterations)
+            
+            print("\n")
                 
             scatter = graph2.scatter(x_scatter, y_scatter, color=colors)
             
