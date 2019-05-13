@@ -23,6 +23,7 @@ def update_graph(red, green, blue):
 
 if __name__ == '__main__':
     plt.ion()
+    fig3, graph3 = plt.subplots()
     fig2, graph2 = plt.subplots()
     fig, graph = plt.subplots()
     x = [0, 0, 1, 1]
@@ -76,6 +77,20 @@ if __name__ == '__main__':
         g_d = int(sys.argv[2])
         b_d = int(sys.argv[3])
         print("\nDesired RGB Value: (", sys.argv[1], sys.argv[2], sys.argv[3], ")\n")
+
+        red_dec2 = (r_d/255)
+        green_dec2 = (g_d/255)
+        blue_dec2 = (b_d/255)
+        
+        if red_dec2 > 1:
+            red_dec2 = 1
+        if green_dec2 > 1:
+            green_dec2 = 1
+        if blue_dec2 > 1:
+            blue_dec2 = 1
+            
+        color_desired2 = (red_dec2, green_dec2, blue_dec2)
+        graph2.fill(x, y, c=color_desired2)
     
     except IndexError:
         cond = False
