@@ -30,6 +30,7 @@ if __name__ == '__main__':
     rgb = sensor.color_raw
 
     plt.ion()
+    fig3, graph3 = plt.subplots()
     fig2, graph2 = plt.subplots()
     fig, graph = plt.subplots()
     x = [0, 0, 1, 1]
@@ -96,7 +97,7 @@ if __name__ == '__main__':
             blue_dec2 = 1
             
         color_desired2 = (red_dec2, green_dec2, blue_dec2)
-        graph2.fill(x, y, c=color_desired2)
+        graph3.fill(x, y, c=color_desired2)
     
     except IndexError:
         cond = False

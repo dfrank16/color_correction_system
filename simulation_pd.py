@@ -89,8 +89,8 @@ if __name__ == '__main__':
         if blue_dec2 > 1:
             blue_dec2 = 1
             
-        color_desired2 = (red_dec2, green_dec2, blue_dec2)
-        graph2.fill(x, y, c=color_desired2)
+        color_desired3 = (red_dec2, green_dec2, blue_dec2)
+        graph3.fill(x, y, c=color_desired3)
     
     except IndexError:
         cond = False
