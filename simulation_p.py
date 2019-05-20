@@ -6,11 +6,14 @@ import sys
 import os
 import argparse
 
+# Update the control graph to dipslay the current colors
 def update_graph(red, green, blue):
+    # Turn the input values into decimals
     red_dec = (red/255)
     green_dec = (green/255)
     blue_dec = (blue/255)
 
+    # Fix irroneous values that may pop up
     if red_dec > 1:
         red_dec = 1
     if green_dec > 1:
@@ -18,10 +21,12 @@ def update_graph(red, green, blue):
     if blue_dec > 1:
         blue_dec = 1
 
+    # Display the new color
     color_desired = (red_dec, green_dec, blue_dec)
     graph.fill(x, y, c=color_desired)
 
 if __name__ == '__main__':
+    # Initialize the graphs
     plt.ion()
     fig3, graph3 = plt.subplots()
     fig2, graph2 = plt.subplots()
@@ -38,6 +43,7 @@ if __name__ == '__main__':
     num_iterations = 0
     stop = 30
     
+    # These are the the sensor values that we are using for simulation
     r_s = 27
     g_s = 150
     b_s = 160
@@ -62,6 +68,7 @@ if __name__ == '__main__':
     kp = 0.6
     
     try: 
+        # Grabs the input arguments when started the program
         r_d = int(sys.argv[1])
         g_d = int(sys.argv[2])
         b_d = int(sys.argv[3])
@@ -82,6 +89,7 @@ if __name__ == '__main__':
         graph3.fill(x, y, c=color_desired2)
     
     except IndexError:
+        # If there is an error with the input arguments, stop the program
         cond = False
         failure = True
     
@@ -90,15 +98,17 @@ if __name__ == '__main__':
 
     try: 
         while cond == True:
-            
+            # Add the updated colors to the graph
             y_scatter.append(r_s)
             y_scatter.append(g_s)
             y_scatter.append(b_s)
             
+            # Add the respective colors to display the points
             colors.append("red")
             colors.append("green")
             colors.append("blue")
             
+            # Update the P values
             r_p = int((r_d-r_s)*kp)
             g_p = int((g_d-g_s)*kp)
             b_p = int((b_d-b_s)*kp)
@@ -110,10 +120,12 @@ if __name__ == '__main__':
             b_u = b_s+b_p
             print("Update color R:",r_u,"G:",g_u,"B:",b_u)
             
+            # Update the graph with the new values
             update_graph(r_u, g_u, b_u)
             plt.pause(1)
             plt.draw()
             
+            # Update sensor values for simulation
             r_s = r_u
             g_s = g_u
             b_s = b_u
@@ -121,12 +133,14 @@ if __name__ == '__main__':
             
             num_iterations = num_iterations + 1
 
+            # Add three values to properly set up the x axis for the new points
             x_scatter.append(num_iterations)
             x_scatter.append(num_iterations)
             x_scatter.append(num_iterations)
             
             print("\n")
                 
+            # Update the scatter plot with the new values
             scatter = graph2.scatter(x_scatter, y_scatter, color=colors)
             
             #Stop after you reach final iteration count
@@ -134,6 +148,7 @@ if __name__ == '__main__':
                 cond = False
             
     except KeyboardInterrupt:
+        # Exit if ctrl-C is detected
         sys.exit()
 
     if failure == True:

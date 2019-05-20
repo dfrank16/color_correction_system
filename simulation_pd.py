@@ -39,7 +39,7 @@ if __name__ == '__main__':
     stop = 30
     
     r_s = 27
-    g_s = 50
+    g_s = 150
     b_s = 160
     print("\nInitial RGB Value: (",r_s, g_s, b_s, ")")
 
