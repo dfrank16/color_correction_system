@@ -5,6 +5,7 @@ import time
 import sys
 import os
 import argparse
+import random
 
 # Update the control graph to dipslay the current colors
 def update_graph(red, green, blue):
@@ -142,6 +143,11 @@ if __name__ == '__main__':
                 
             # Update the scatter plot with the new values
             scatter = graph2.scatter(x_scatter, y_scatter, color=colors)
+
+            if num_iterations == 15:
+                r_s = random.randint(0, 255)
+                g_s = random.randint(0, 255)
+                b_s = random.randint(0, 255)
             
             #Stop after you reach final iteration count
             if stop == num_iterations:
